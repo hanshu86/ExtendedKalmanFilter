@@ -146,7 +146,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.F_(0,2) = dt;
     ekf_.F_(1,3) = dt;
 
-    cout << ekf_.F_ << endl;
+    // cout << "F:" << ekf_.F_ << endl;
 
     float noise_ax = 9.0;
     float noise_ay = 9.0;
@@ -173,9 +173,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
         // TODO: Radar updates
 
+
     } else {
         // TODO: Laser updates
+        VectorXd z = VectorXd(2);
+        z << measurement_pack.raw_measurements_[0],measurement_pack.raw_measurements_[1];
 
+        ekf_.Update(z);
     }
 
     // print the output

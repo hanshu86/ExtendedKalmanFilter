@@ -11,6 +11,9 @@ Tools::Tools() {}
 
 Tools::~Tools() {}
 
+/**
+* Implementation based in Quiz
+*/
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
                               const vector<VectorXd> &ground_truth) {
 	VectorXd rmse(4);
@@ -35,7 +38,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 	// calculate the mean
 	rmse = rmse/estimations.size();
 
-	cout << "RMSE:" << rmse << endl;
+	// cout << "RMSE:" << rmse << endl;
 
 	// calculate the squared root
 	rmse = rmse.array().sqrt();
@@ -43,6 +46,9 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 	return rmse;
 }
 
+/**
+* Implementation based in Quiz
+*/
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
 	MatrixXd Hj(3,4);

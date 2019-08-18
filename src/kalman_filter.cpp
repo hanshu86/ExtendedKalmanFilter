@@ -1,7 +1,10 @@
+#include <iostream>
 #include "kalman_filter.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using std::cout;
+using std::endl;
 
 /* 
  * Please note that the Eigen library does not initialize 
@@ -35,8 +38,61 @@ void KalmanFilter::Update(const VectorXd &z) {
     /**
     * TODO: update the state by using Kalman Filter equations
     */
-    VectorXd z_pred = H_ * x_;
-    VectorXd y = z - z_pred;
+    VectorXd y = z - (H_ * x_);
+    
+    doMeasurementUpdate(y);
+}
+
+void KalmanFilter::UpdateEKF(const VectorXd &z) {
+    /**
+    * TODO: update the state by using Extended Kalman Filter equations
+    */
+    float px = x_(0);
+    float py = x_(1);
+    float vx = x_(2);
+    float vy = x_(3);
+
+    float rho = sqrt ( px * px + py * py);
+    float theta = atan2 ( py, px );
+    float rho_dot = ( px * vx + py * vy ) / rho;
+
+    VectorXd radar_vector = VectorXd(3);
+    radar_vector << rho, theta, rho_dot;
+
+    VectorXd y = z - radar_vector;
+
+    //now need to normalize theta
+    y(1) = normalizeAngle(y(1));
+
+    doMeasurementUpdate(y);
+}
+
+/**
+*
+* Normalize angle so that theta is in range of -Pi,Pi
+*/
+float KalmanFilter::normalizeAngle(float theta)
+{
+    float normalied_angle = theta;
+
+    while ( normalied_angle > M_PI || normalied_angle < - M_PI ) 
+    {
+        if ( normalied_angle > M_PI )
+        {
+            normalied_angle -= (2 * M_PI);
+        } 
+        else 
+        {
+            normalied_angle += (2 * M_PI);
+        }
+    }
+
+    return normalied_angle;
+}
+
+
+void KalmanFilter::doMeasurementUpdate(VectorXd &y)
+{
     MatrixXd Ht = H_.transpose();
     MatrixXd S = H_ * P_ * Ht + R_;
     MatrixXd Si = S.inverse();
@@ -48,10 +104,4 @@ void KalmanFilter::Update(const VectorXd &z) {
     long x_size = x_.size();
     MatrixXd I = MatrixXd::Identity(x_size, x_size);
     P_ = (I - K * H_) * P_;
-}
-
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
-    /**
-    * TODO: update the state by using Extended Kalman Filter equations
-    */
 }

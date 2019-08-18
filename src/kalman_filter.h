@@ -4,6 +4,12 @@
 #include "Eigen/Dense"
 
 class KalmanFilter {
+ private:
+  
+  float normalizeAngle(float theta);
+
+  void doMeasurementUpdate( Eigen::VectorXd &y);
+
  public:
   /**
    * Constructor

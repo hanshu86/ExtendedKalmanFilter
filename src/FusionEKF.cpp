@@ -148,8 +148,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     // cout << "F:" << ekf_.F_ << endl;
 
-    float noise_ax = 9.0;
-    float noise_ay = 9.0;
+    float noise_ax = 9.0f;
+    float noise_ay = 9.0f;
 
     // Updated the process noise covariance matrix.
     ekf_.Q_ << (dt_4 * noise_ax)/4.0f, 0, (dt_3 * noise_ax)/2.0f, 0,
